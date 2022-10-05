@@ -1,0 +1,16 @@
+﻿
+
+{
+
+  "profiles": {
+    "spa": {
+      "commandName": "Project",
+      "launchBrowser": false,
+      "applicationUrl": "http://localhost:5122",
+      "environmentVariables": {
+        "_ASPNETCORE_ENVIRONMENT": "Development",
+        "_ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.SpaProxy"
+      }
+    }
+  }
+}
