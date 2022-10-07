@@ -16,7 +16,8 @@
 
   <div class="py-4"/>
 
-  <div style="padding: 15px; border-radius: 1rem; overflow: hidden; ; background-color: #002b36" class="shadow-6">
+
+  <div style="padding: 15px; border-radius: 1rem; overflow: hidden; ; background-color: #002b36; " class="shadow-6">
    <div  id="terminal"></div>
   </div>
 
@@ -48,24 +49,27 @@
 <script lang="ts">
 
 import 'xterm/css/xterm.css';
-import type {Terminal} from 'xterm'
+import type {ITerminalAddon, Terminal} from 'xterm'
 import {ismobile, singleton} from "../singleton";
-
+//@ts-ignore
+import { WebglAddon }  from 'xterm-addon-webgl'
 
 export default {
 
   data(){
   return{
   xterm:null as Terminal,
-   wtf:false as boolean
+   addon:null as ITerminalAddon
+
   }
   },
 
 
 
  unmounted() {
- this.xterm?.dispose()
- this.xterm = null
+  this.dispose()
+
+
  },
 
 
@@ -77,10 +81,7 @@ export default {
 
    this.$nextTick(async()=>{
 
-
-    this.xterm?.dispose()
-    this.xterm = null
-
+    this.dispose()
 
    /* await singleton.Instance.socket_send('SendMessage',"cool")*/
 
@@ -100,6 +101,13 @@ export default {
 
    methods:{
 
+   dispose(){
+    this.addon?.dispose()
+    this.addon = null
+    this.xterm?.dispose()
+    this.xterm = null
+
+   },
 
    toast(){
 
@@ -135,10 +143,16 @@ export default {
 
      const load = await import('xterm')
 
+
+
      if (this.xterm) return
 
 
-     this.xterm = new load.Terminal({cursorBlink:true,
+     this.xterm = new load.Terminal({
+
+       allowProposedApi:true,
+
+       cursorBlink:true,
 
 
        convertEol:true,
@@ -173,13 +187,17 @@ export default {
 
       this.xterm.open(el);
 
-
-
       el.setAttribute('contenteditable', 'true');
       el.setAttribute('spellcheck', 'false');
       el.setAttribute('autocorrect', 'false');
       el.setAttribute('autocomplete', 'false');
       el.setAttribute('autocapitalize', 'false');
+
+
+      this.addon = new WebglAddon();
+      this.addon.activate(this.xterm)
+
+
 
      this.xterm.onData(async data=>{
 

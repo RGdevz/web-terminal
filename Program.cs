@@ -14,6 +14,24 @@ using Newtonsoft.Json;
 using spa.Helpers;
 
 
+struct my_json
+{
+ public string my_username;
+ public string my_password;
+
+}
+
+
+struct my_json2
+{
+
+ public string username;
+ public string password;
+
+}
+
+
+
 public class Program
  {
  public static void Main(string[] args)
@@ -58,14 +76,9 @@ catch (Exception e)
 
  var json = File.ReadAllText("appsettings.json");
 
- dynamic stuff = JsonConvert.DeserializeObject(json)!;
+ var stuff = JsonConvert.DeserializeObject<my_json>(json)!;
 
 
- var username = (string)stuff.my_username;
- var password = (string)stuff.my_password;
-
-
- 
 
 
  builder.Services.AddSignalR(options =>
@@ -160,10 +173,10 @@ app.UseCors("CorsApi");
    }
      
 
-   dynamic stuff = JsonConvert.DeserializeObject(bodyAsText)!;
+   var thejson = JsonConvert.DeserializeObject<my_json2>(bodyAsText)!;
 
-   var user = (string)stuff.username;
-   var pass = (string)stuff.password;
+   var user = (string)thejson.username;
+   var pass = (string)thejson.password;
     
     
    if (string.IsNullOrWhiteSpace(user))
@@ -180,9 +193,9 @@ app.UseCors("CorsApi");
    
    
    
-    if (user.Equals(username))
+    if (user.Equals(stuff.my_username))
     {
-    if (pass.Equals(password))
+    if (pass.Equals(stuff.my_password))
     {
     httpContext.Response.Cookies.Append("secret",Jwt.create_jwt(),new CookieOptions(){Expires = DateTimeOffset.UtcNow.AddDays(7)});
     await httpContext.Response.WriteAsync("ok");

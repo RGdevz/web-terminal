@@ -15,7 +15,7 @@ namespace spa.Helpers
   private static PtyHelper? _ptyHelper = null;
 
   private CancellationTokenSource? _cancellationToken = null;
-
+  protected UTF8Encoding Encoding = new(false);
 
   private PtyHelper()
    {
@@ -97,7 +97,7 @@ namespace spa.Helpers
 
     _cancellationToken = new CancellationTokenSource();
 
-    _ptyConnection = await PtyProvider.SpawnAsync(new PtyOptions() {Cols = 90, Rows = 50, App = shell_type, Cwd = "/", VerbatimCommandLine = true, ForceWinPty = true}, _cancellationToken.Token);
+    _ptyConnection = await PtyProvider.SpawnAsync(new PtyOptions() {Cols = 90, Rows = 30, App = shell_type, Cwd = "/", VerbatimCommandLine = true, ForceWinPty = true}, _cancellationToken.Token);
     
 
     
@@ -139,13 +139,13 @@ namespace spa.Helpers
     
     
     
-    byte[] buffer = new byte[4096];
+    byte[] buffer = new byte[8096];
 
     while (!_cancellationToken!.IsCancellationRequested)
     {
-     
-   
-     int count = await term.ReadAsync(buffer, 0, buffer.Length, this._cancellationToken.Token).ConfigureAwait(false);
+
+
+     int count = await term.ReadAsync(buffer, 0, buffer.Length, this._cancellationToken.Token);
 
      if (count == 0)
      {
@@ -153,7 +153,7 @@ namespace spa.Helpers
      }
      
      
-     var stuff = Encoding.UTF8.GetString(buffer, 0, count);
+     var stuff = Encoding.GetString(buffer, 0, count);
 
       /*await clientProxy.SendAsync("shell_session", stuff);*/
 
