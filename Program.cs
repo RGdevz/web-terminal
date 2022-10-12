@@ -22,11 +22,12 @@ struct my_json
 }
 
 
-struct my_json2
+public class my_json2
 {
 
- public string username;
- public string password;
+ public string? username { get; set; }
+
+ public string? password { get; set; }
 
 }
 
@@ -49,14 +50,19 @@ public class main
 
 
  
-public void init(){
-
+public void init()
+{
+ 
+ 
+ 
+ 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions()
 {
     
 /*WebRootPath = "wwwroot"*/
 }
 );
+
 
 
 
@@ -117,6 +123,7 @@ builder.Services.AddControllersWithViews();
 
 
 
+
 var app = builder.Build();
 
 
@@ -165,26 +172,18 @@ app.UseCors("CorsApi");
   
   try
   {
-   var bodyAsText = await new StreamReader(httpContext.Request.Body).ReadToEndAsync();
+   
+  
 
-   if (string.IsNullOrWhiteSpace(bodyAsText))
-   {
-   throw new Exception("no credentials");
-   }
-     
-
-   var thejson = JsonConvert.DeserializeObject<my_json2>(bodyAsText)!;
-
-   var user = (string)thejson.username;
-   var pass = (string)thejson.password;
+   var form = await httpContext.Request.ReadFromJsonAsync<my_json2>();
+   
     
-    
-   if (string.IsNullOrWhiteSpace(user))
+   if (string.IsNullOrWhiteSpace(form?.username))
    {
     throw new Exception("no username");
    }
     
-   if (string.IsNullOrWhiteSpace(pass))
+   if (string.IsNullOrWhiteSpace(form?.password))
    {
     throw new Exception("no password");
    }
@@ -193,9 +192,9 @@ app.UseCors("CorsApi");
    
    
    
-    if (user.Equals(stuff.my_username))
+    if (form.username.Equals(stuff.my_username))
     {
-    if (pass.Equals(stuff.my_password))
+    if (form.password.Equals(stuff.my_password))
     {
     httpContext.Response.Cookies.Append("secret",Jwt.create_jwt(),new CookieOptions(){Expires = DateTimeOffset.UtcNow.AddDays(7)});
     await httpContext.Response.WriteAsync("ok");
@@ -231,9 +230,12 @@ app.UseCors("CorsApi");
 
   try
   {
+   
   
+   
 
   context.Request.Cookies.TryGetValue("secret", out var secret);
+  
 
   if (string.IsNullOrWhiteSpace(secret))
   {

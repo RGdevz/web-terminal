@@ -38,7 +38,10 @@ export default {
 
   methods:{
 
+
   test(){
+
+
 
   this.$router.push('/auth/login')
   }

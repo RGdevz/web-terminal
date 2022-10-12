@@ -143,6 +143,9 @@ namespace spa.Helpers
 
     while (!_cancellationToken!.IsCancellationRequested)
     {
+     
+     try
+     {
 
 
      int count = await term.ReadAsync(buffer, 0, buffer.Length, this._cancellationToken.Token);
@@ -157,8 +160,7 @@ namespace spa.Helpers
 
       /*await clientProxy.SendAsync("shell_session", stuff);*/
 
-      try
-      {
+    
 
        await SocketServerManager.Instance.send_all("shell_session", stuff);
 
