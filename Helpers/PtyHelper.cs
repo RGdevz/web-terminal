@@ -52,9 +52,21 @@ namespace spa.Helpers
   
   public void kill_terminal()
   {
-   _cancellationToken?.Cancel();
-   _ptyConnection?.Dispose();
-   _ptyConnection = null;
+   try
+   {
+    _cancellationToken?.Cancel();
+    _ptyConnection?.Dispose();
+   }
+   catch (Exception e)
+   {
+    Console.Error.Write(e.Message);
+   }
+   finally
+   {
+    _ptyConnection = null; 
+   }
+
+   
 
   }
 
