@@ -110,6 +110,8 @@ catch (Exception e)
  
  
  
+ 
+ 
 
  
 var provider = new ManifestEmbeddedFileProvider(typeof(Program).Assembly,"embedded/clientapp/dist");

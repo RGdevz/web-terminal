@@ -48,7 +48,16 @@ namespace spa.Helpers
     
     
     
-    
+    public void print_embedded_content()
+    {
+     typeof(Program).Assembly.GetManifestResourceNames().ToList().ForEach(x => Console.WriteLine(x));
+
+     using (var stream = typeof(Program).Assembly.GetManifestResourceStream("Microsoft.Extensions.FileProviders.Embedded.Manifest.xml"))
+     using (TextReader tr = new StreamReader(stream))
+     {
+    Console.WriteLine(tr.ReadToEnd());
+     }
+     } 
     
     
     
@@ -66,6 +75,7 @@ namespace spa.Helpers
 
    public void extract_winpty_lib()
    {
+    
     
    if (!File.Exists("winpty.dll"))
    {
